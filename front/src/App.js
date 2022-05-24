@@ -5,22 +5,32 @@ import Principal from './pages/Principal'
 import Tables from './pages/tables'
 import Page404 from './pages/404'
 
-import Cookies from 'js-cookie'
-
 import {
   BrowserRouter,
   Routes,
   Route
 } from "react-router-dom";
+import { useEffect, useMemo } from 'react'
+import peticion from './utils/peticions'
 
 function App() {
+
+  const peticionFun = useMemo(()=>new peticion(),[])
+  useEffect(()=>{
+    (async ()=>{
+      let data = await peticionFun.post("auth")
+      console.log(data)
+      
+    })()
+  },[peticionFun])
+
   return (
     <>
       <Header></Header>
       
       <BrowserRouter>
         <Routes>  
-          <Route exact path="/" element ={ Cookies.get("token") === undefined ? <Principal/> : <Tables/>}/>
+          <Route exact path="/" element ={ localStorage.getItem('token') == undefined ? <Principal/> : <Tables/>}/>
 
           <Route path="/register" component={<>hola soy un registro</>} />
           <Route path="*" element={ <Page404/>} />

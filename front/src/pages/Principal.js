@@ -1,36 +1,43 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie'
+import peticion from "../utils/peticions";
 
 const Principal = ()=>{
     
   const formLogin = useRef(null);
+  const peticionFun =useMemo(() => new peticion())
   const navigate = useNavigate();
-  const buttonhandel = () => {
+  const buttonhandel = async () => {
     if (formLogin.current == null) {
       return
     }
     const data = new FormData(formLogin.current)
-    console.log(data.get('password'))
-    console.log(data.get('cedula'))
-    fetch(`http://localhost:3001/log/${data.get('cedula')}/${data.get('password')}`, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        if (data.estado) {
-            Cookies.set("token", data.token)
-          navigate(0);
-        }
+    
+    const response = await peticionFun.post(`log/${data.get('cedula')}/${data.get('password')}`)
+    console.log(response)
+    if (response.estado) {
+      localStorage.setItem("token", response.token)
+      navigate(0);
+    }
 
-    });
+    // fetch(`http://localhost:3001/log/${data.get('cedula')}/${data.get('password')}`, {
+    //   method: 'POST',
+    //   mode: 'cors',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    //   body: JSON.stringify(data)
+    // })
+      // .then(response => response.json())
+      // .then(data => {
+      //   console.log(data)
+      //   if (data.estado) {
+      //     localStorage.setItem("token", data.token)
+      //     navigate(0);
+      //   }
+
+    // });
   }
 
   return (
