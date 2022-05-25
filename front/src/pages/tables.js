@@ -1,115 +1,133 @@
 import React, { useEffect, useMemo, useState } from "react";
 import TrAdmins from "../componets/TrAdmis";
+import TrEntierros from "../componets/TrEntierros";
 import TrMuertos from "../componets/TrMuertos";
 import peticion from "../utils/peticions";
 
 
 const Tables = () => {
 
-    const [admins, setAdmins] =  useState(null)
-    const [muertos, setmuertos] =  useState(null)
-    // const peticionFun = new peticion()
-    const peticionFun = useMemo(()=>new peticion(),[])
+    const [admins, setAdmins] = useState(null)
+    const [muertos, setMuertos] = useState(null)
+    const [entierros, setEntierros] = useState(null)
+    const peticionFun = useMemo(() => new peticion(), [])
 
-    useEffect(()=>{
-        (async function (){
+    useEffect(() => {
+        (async function () {
             let data = await peticionFun.get('')
             let data2 = await peticionFun.get('muertos')
-            // console.log(data)
-            setAdmins(()=> data.users)
-            setmuertos(()=> data2.users)
-            
+            let data3 = await peticionFun.get('entierros')
+            setAdmins(() => data.users)
+            setMuertos(() => data2.users)
+            setEntierros(() => data3.users)
         })()
-        
-        // fetch('http://localhost:3001/')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         setAdmins(()=> data.users)
-        //     })
-    },[peticionFun])
+    }, [peticionFun])
     return (
         <>
-            <h2>
-                esta logeado
-            </h2>
             <h4>personas</h4>
-            <table>
+            <div style={{
+                display:"flex",
+                justifyContent:"center"
+            }}>
+            <table className="table table-striped" style={{
+                width:"80%"
+            }}>
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Tipo de documento</th>
-                        <th>cedula</th>
+                        <th>tipo DNI</th>
+                        <th>DNI</th>
                         <th>Nombre</th>
+                        <th>Apellido</th>
                         <th>fecha de nacimiento</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
-                
+
                 <tbody>
-                    {/* <tr>
-                        <td>1</td>
-                        <td>cc</td>
-                        <td>666</td>
-                        <th>Apellido</th>
-                        <td>carlos</td>
-                        <td>vergel</td>
-                        <td>2022-08-30</td>
-                    </tr> */}
-                    
                     {
                         !admins
-                        ? <>cargando</>
-                        : admins.map((element, i) =>{
-                            
-                            return <TrAdmins key={i} props={element}/>
-                        })
-                    }                    
-                    
-                </tbody> 
-                
-            </table>
+                            ? <>cargando</>
+                            : admins.map((element, i) => {
 
+                                return <TrAdmins key={i} props={element} />
+                            })
+                    }
+
+                </tbody>
+
+            </table>
+            </div>
 
             <h4>muertos</h4>
-            <table>
+            <table className="table">
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Tipo de documento</th>
+                        <th>tipo DNI</th>
                         <th>cedula</th>
                         <th>Nombre</th>
                         <th>Apellido</th>
-                        <th>fecha nacimiento</th>
-                        <th>fecha fallecimiento</th>
+                        <th>nacimiento</th>
+                        <th>fallecimiento</th>
                         <th>pais</th>
                         <th>sede</th>
-                        
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
-                
+
                 <tbody>
-                    {/* <tr>
-                        <td>1</td>
-                        <td>cc</td>
-                        <td>666</td>
-                        <td>carlos</td>
-                        <td>vergel</td>
-                        <td>2022-08-30</td>
-                    </tr> */}
-                    
                     {
                         !muertos
-                        ? <>cargando</>
-                        : muertos.map((element, i) =>{
-                            
-                            return <TrMuertos key={i} props={element}/>
-                        })
-                    }                    
-                    
-                </tbody> 
-                
+                            ? <>cargando</>
+                            : muertos.map((element, i) => {
+
+                                return <TrMuertos key={i} props={element} />
+                            })
+                    }
+                </tbody>
             </table>
+            <hr></hr>
+            <div>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>nom Admin</th>
+                        <th>estado</th>
+                        <th>DNI admin</th>
+                        <th>nom Cliente</th>
+                        <th>ape Cliente</th>
+                        <th>dni</th>
+                        <th>cedula</th>
+                        <th>nom Muerto</th>
+                        <th>ape Muerto</th>
+                        <th>dni</th>
+                        <th>Nacimiento</th>
+                        <th>Fallecimiento</th>
+                        <th>sede</th>
+                        <th>pais</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        !entierros
+                            ? <>cargando</>
+                            : entierros.map((element, i) => {
+
+                                return <TrEntierros key={i} props={element} />
+                            })
+                    }
+                </tbody>
+            </table>
+            </div>
+            
         </>
-    ) 
+    )
 }
 
 export default Tables
